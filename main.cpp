@@ -1,6 +1,7 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QDebug>
+#include <QRandomGenerator>
 //=====================================================================================================
 QStringList GetAllFiles(QString path,QString aliasPath="")
 {
@@ -73,9 +74,25 @@ testFile.close();
 validationFile.close();
 qDebug()<<"done";
 }
+QStringList ShuffleFileList(QStringList files)
+{
+  QStringList result;
+  while (files.length()>0) {
+      int randomIndex=QRandomGenerator::global()->bounded(files.length());
+      result.append(files[randomIndex]);
+      files.removeAt(randomIndex);
+
+  }
+
+
+  return result;
+}
 //=====================================================================================================
 int main(int argc, char *argv[])
 {
+
+
+
     QCoreApplication a(argc, argv);
     if(argc<3)
     {
@@ -88,8 +105,9 @@ int main(int argc, char *argv[])
     }
 qDebug()<<"input folder files:"<<argv[1]<<" output path:"<<argv[2]<<" address prefix:"<<argv[3];
 QStringList files=GetAllFiles(argv[1],argv[3]);
+
 qDebug()<<"scanning complete:"<<files.count()<<" files";
-CreateListFile(argv[2],files);
+CreateListFile(argv[2],ShuffleFileList(files));
 return 0;
 
 }
